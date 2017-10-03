@@ -49,7 +49,7 @@ year=$( date '+%Y' )
 # Calculate year month day hour string.
 #
 raw_month=$( date '+%m' )
-month=$( echo ${raw_month} | sed -e 's/0//' )
+month=$( echo ${raw_month} | sed -e 's/^0//' )
 
 day=`date '+%d'`
 
@@ -82,6 +82,9 @@ ret=$?
 if [ $ret -ne 0 ]; then
   echo "Could not copy images to upload host."
   exit 2
+else
+  echo "Removing images matching pattern ${pattern}*.jpg after successfull copy."
+  rm ${pattern}*.jpg
 fi
 
 echo "`date`: Copy completed, running archive on upload host..."
