@@ -1,6 +1,7 @@
 #!/bin/sh
 
 imgdir=/var/lib/tomcat8/webapps/svc/img
+latest=/run/images/latest.jpg
 
 usage() {
   echo "`basename $0` delay width height prefix imgdir"
@@ -29,5 +30,5 @@ shift
 
 echo "Going to execute raspistill -n -hf -vf -t 0 -tl ${delayms} -o ${imgdir}/${prefix}%d.jpg -dt -w ${width} -h ${height} -l latest.jpg -a 12 -ae 16 &"
 
-raspistill -n -hf -vf -t 0 -tl ${delayms} -o ${imgdir}/${prefix}%d.jpg -dt -w ${width} -h ${height} -l ${imgdir}/latest.jpg -a 12 -ae 16 &
+raspistill -n -hf -vf -t 0 -tl ${delayms} -o ${imgdir}/${prefix}%d.jpg -dt -w ${width} -h ${height} -l ${latest} -a 12 -ae 16 &
 
