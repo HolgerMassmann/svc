@@ -1,0 +1,5 @@
+#
+# Deletes JPG images from directories marked for purging,
+# which are at least 24 hours old.
+#
+25 * * * * /home/pi/svc/bin/purge.sh /home/pi/svc/logs/purge.log > /dev/null 2>&1
