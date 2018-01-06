@@ -1,2 +1,0 @@
-12 * * * * /home/pi/bin/upload.sh >> /home/pi/logs/upload.log 2>&1
-5,10,15,20,25,30,35,40,45,50,55 * * * *  /home/pi/bin/watchdog.sh >> /home/pi/logs/watchdog.log 2>&1
