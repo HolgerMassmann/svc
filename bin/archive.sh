@@ -24,7 +24,7 @@ function log() {
 #
 function parse_and_copy() {
   local img=$1
-  local y="2017"
+  local y=$( date '+%Y' )
  
   if [ ${#img} -eq 15 ]
   then

@@ -11,7 +11,7 @@ fi
 
 day=$1
 
-year=2017
+year=$( date '+%Y' )
 month=07
 
 svc_dir=/home/pi/svc

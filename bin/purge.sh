@@ -12,6 +12,8 @@ then
   purge_log=$1
 fi
 
+log ${purge_log} "Looking for directories to purge using find ${svc_img_dir} -name \.purge -mtime +0"
+
 img_dirs=$( find ${svc_img_dir} -name \.purge -mtime +0 )
 num_dirs=$( echo -n "${img_dirs}" | wc -l )
 

@@ -28,6 +28,7 @@ function log() {
 
 if [ $# -ne 2 ]; then
   usage
+  exit 1
 fi
 
 # Sub folder beneath img_base_dir to find the images in.
@@ -46,6 +47,15 @@ log "Using control file ${ctrl_file}"
 ls ${img_dir}/*.jpg > ${ctrl_file}
 num_lines=$( wc -l ${ctrl_file} | cut -f1 -d' ' )
 log "Control file contains ${num_lines} lines."
+
+#
+# Need to verify there are 1200 entries in the control file,
+# otherwise skip remaining steps.
+
+if [ $num_lines -lt 1200 ]; then
+  log "Too few lines in control file, skipping video generation."
+  exit 1
+fi
 
 log "Running encode.sh ${ctrl_base} ${frame_rate}"
 ${svc_home}/bin/encode.sh ${ctrl_base} ${frame_rate} >> ${log_file} 2>&1
