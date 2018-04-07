@@ -1,37 +1,29 @@
 #!/bin/bash
 
+width=1280
+height=960
+
 function usage() {
-  echo "Usage: `basename $0` day-of-month"
+  echo "Usage: `basename $0` control-file fps"
 }
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
   usage
-  exit 1
+  exit 2
 fi
 
-day=$1
+ctrlfile=$1
+fps=$2
 
-year=$( date '+%Y' )
-month=07
+basedir=/home/pi/svc/encode
+outputdir=/home/pi/svc_web/video
+ctrldir=$basedir/ctrl
+bindir=$basedir/bin
 
-svc_dir=/home/pi/svc
-encode_dir=/home/pi/svc/encode
-imgbase_dir=/var/lib/tomcat8/webapps
-imgday_dir=${imgbase_dir}/svc/img/${year}/${month}/${day}
+encoder=mencoder
 
-hours=$( ls ${imgday_dir} )
-echo "Directories in ${imgday_dir}: $( echo ${hours} | tr '\n' ' ' )"
+echo "Executing: $encoder mf://@${ctrldir}/${ctrlfile}.txt -mf w=${width}:h=${height}:fps=${fps}:type=jpg -o ${outputdir}/${ctrlfile}.avi -ovc lavc -lavcopts vcodec=mpeg4"
 
-for i in $hours
-do
-  filelist=${encode_dir}/ctrl/${year}${month}${day}${i}.txt
-  echo "Generating file list for day/hour: ${day}/${i} into ${filelist}"
-  ls ${imgday_dir}/${i}/* > ${filelist}
-  if [ $? -ne 0 ]; then
-    echo "Failed to generate image file list for ${imgday_dir}/${i}, skipping."
-    continue
-  fi
+$encoder mf://@${ctrldir}/${ctrlfile}.txt -mf w=${width}:h=${height}:fps=${fps}:type=jpg -o ${outputdir}/${ctrlfile}.avi -ovc lavc -lavcopts vcodec=mpeg4
 
-  echo "Running: ${svc_dir}/bin/encode.sh 201707${day}${i} 24 >> ${encode_dir}/logs/encode.log 2>&1"
-  ${svc_dir}/bin/encode.sh 201707${day}${i} 24 >> ${encode_dir}/logs/encode.log 2>&1
-done
+echo "Generated ${outputdir}/${ctrlfile}.avi successfully."

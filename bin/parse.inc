@@ -1,30 +1,19 @@
 #!/bin/bash
 
 #
-# Logging funtion (replace with generic version later).
-#
-function log() {
-  local message=$1
-  local tstamp=$( date '+%FT%T' )
-  echo "${tstamp}: ${message}"
-}
-
-#
 # Splits a filename into month, day, hour, minute and second part.
 # To generalize we need to know the length of the prefix.
 # We assume that the prefix is separated from the remaining file name
 # by an underscore. The remaining part consists of a timestamp
 # using the format mddHHMMSS.jpg. m is either 1 (if month < 10) or
-# 2 digits). 
+# 2 digits. 
 #
-function parse_and_copy() {
+function parse_image_file_name() {
   local img=$1
   local prefix="r_"
 
   if [ $# -eq 2 ]; then
     prefix="$2"
-  else
-    log "Usage: parse_and_copy file-name [prefix (default=r_)]"
   fi
 
   offset=${#prefix}
@@ -81,10 +70,3 @@ function parse_and_copy() {
   echo "Image Directory: ${imgdir}"
 }
 
-
-if [ $# -lt 1 -o $# -gt 2 ]; then
-  echo "Usage: $(basename $0) filename [prefix]"
-  exit 1
-fi
-
-parse_and_copy $@

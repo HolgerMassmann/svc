@@ -7,13 +7,15 @@
 #
 
 # Configuration
-img_base_dir=/var/lib/tomcat8/webapps/svc/img
+img_base_dir=/home/pi/images/raspi2
 svc_home=/home/pi/svc
 ctrl_dir=${svc_home}/encode/ctrl
 svc_web=/home/pi/svc_web
 svc_video=${svc_web}/video
 log_file=${svc_home}/logs/encode.log
 run_log_file=${svc_home}/logs/run_encode.log
+
+min_image_count=100
 
 function usage() {
   echo "Usage: `basename $0` input-directory frame-rate"
@@ -49,10 +51,10 @@ num_lines=$( wc -l ${ctrl_file} | cut -f1 -d' ' )
 log "Control file contains ${num_lines} lines."
 
 #
-# Need to verify there are 1200 entries in the control file,
+# Need to verify there are n entries in the control file,
 # otherwise skip remaining steps.
 
-if [ $num_lines -lt 1200 ]; then
+if [ $num_lines -lt ${min_image_count} ]; then
   log "Too few lines in control file, skipping video generation."
   exit 1
 fi
