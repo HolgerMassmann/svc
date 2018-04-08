@@ -23,3 +23,7 @@ hs_err_pid*
 
 # svc control files.
 encode/ctrl/*
+
+# Generated video files.
+*.mp4
+*.avi
