@@ -5,8 +5,8 @@
 #
 camera_host=raspi2.fritz.box
 camera_user=pi
-img_base_dir=/home/pi/images/daily
-img_arch_dir=/var/images/daily
+img_base_dir=/var/images/daily
+img_arch_dir=/svc/data/images/daily
 
 run_log_file=$HOME/svc/logs/archive_day.log
 
