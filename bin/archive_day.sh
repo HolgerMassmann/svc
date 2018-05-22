@@ -1,54 +1,61 @@
 #!/bin/bash
 
 #
-# base directory.
+# Get script directory.
 #
-camera_host=raspi2.fritz.box
+DIR="${BASH_SOURCE%/*}"
+if [[ -z $DIR ]]; then
+  DIR=$(pwd)
+fi
+
+#
+# Not needed so far.
+#
+camera_host=raspberry.fritz.box
 camera_user=pi
-img_base_dir=/var/images/daily
+
+#
+# Base directory.
+#
+img_base_dir=/svc/data/images/daily
 img_arch_dir=/svc/data/images/daily
 
 run_log_file=$HOME/svc/logs/archive_day.log
 
 #
-# Logging funtion (replace with generic version later).
+# Defines log function
 #
-function log() {
-  local message=$1
-  local tstamp=$( date '+%FT%T' )
-  echo "${tstamp}: ${message}" >> ${run_log_file}
+. "${DIR}/log_def.sh"
+
+function usage() {
+  log "Usage: $(basename ${0}) [prefix] file-pattern"
 }
 
 #
-# Splits a filename into month, day, hour, minute and second part.
+# Defines parse_and_copy function.
 #
-function parse_and_copy() {
-  local img=$1
-  local y=$( date '+%Y' )
- 
-  if [ ${#img} -eq 17 ]
-  then
-    local m=${img:4:1}
-    local d=${img:5:2}
-    local hh=${img:7:2}
-    local mi=${img:9:2}
-    local ss=${img:11:2}
-  elif [ ${#img} -eq 18 ]
-  then
-    local m=${img:4:2}
-    local d=${img:6:2}
-    local hh=${img:8:2}
-    local mi=${img:10:2}
-    local ss=${img:12:2}
+. "${DIR}/parse_def.sh"
+
+
+#
+# Actually copies the file.
+#
+function copy_image_file() {
+  
+  if [[ $# -ne 1 ]]; then
+    log "Wrong number of parameters [$#], exiting..."
+    return 4
+  fi 
+
+  if [[ -z $imgdir ]]; then
+    log "Image directory not set, exiting..."
+    return 4
   fi
 
-  imgtime=$( printf '%4d-%02d-%02d %02d:%02d:%02d' "${y}" "${m#0}" "${d#0}" "${hh#0}" "${mi#0}" "${ss#0}" )
-  log "Image $img has been taken at ${imgtime}"
-
-  imgdir=$( printf '%4d/%02d/%02d' "${y}" "${m#0}" "${d#0}" )
-  src_path=${img_base_dir}/${img}
-  dest_dir=${img_arch_dir}/${imgdir}
-  dest_img=${img_arch_dir}/${imgdir}/${img}
+  local img=$1
+  local src_path=${img_base_dir}/${img}
+  local dest_dir=${img_arch_dir}/${imgdir}
+  local dest_img=${img_arch_dir}/${imgdir}/${img}
 
   # Verify the source image does indeed exist.
   if [ ! -r ${src_path} ]; then
@@ -80,10 +87,6 @@ function parse_and_copy() {
   fi
 }
 
-function usage() {
-  echo "Usage: `basename $0` file-list"
-}
-
 if [ $# -lt 1 ]; then
   usage
   exit 1
@@ -96,8 +99,13 @@ if [ $? -ne 0 ]; then
   exit 3
 fi
 
+# First parameter is prefix.
+prefix=$1
+shift
+
 files=$*
 for i in ${files}; do
   # echo ${i}
-  parse_and_copy ${i}
+  parse_image_file_name ${prefix} ${i}
+  copy_image_file ${i}
 done
